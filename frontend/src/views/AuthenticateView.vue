@@ -16,6 +16,7 @@
 import { ParticlesBg } from "particles-bg-vue";
 import axios from 'axios';
 import { ref } from 'vue';
+import router from "@/router";
 
 
 
@@ -45,6 +46,7 @@ export default {
             console.log("fick")
           }else{
             localStorage.setItem('token', JSON.stringify(response.data));
+            router.push('/Dashboard')
           }
         }
       } catch (error) {
