@@ -1,12 +1,18 @@
-from flask import Flask
+from flask import Flask, request
+from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/')
+@app.route('/auth', methods=['POST'])
 def func():
-    return 'test'
+    ___requestBody = request.get_data(as_text=True)
+    print (___requestBody)
+    x = requests.post('http://localhost:3001/auth', ___requestBody)
+    return x.content
 
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(port="6666")
+    app.run(port="3000")

@@ -1,5 +1,5 @@
 <template>
-  <h1>test</h1>
+  <router-view></router-view>
 </template>
 
 <script>
@@ -19,6 +19,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 0px;
+  padding: 0px;
 }
 </style>
