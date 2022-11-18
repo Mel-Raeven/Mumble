@@ -2,7 +2,7 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 
 import Authenticate from '@/views/AuthenticateView.vue';
 import Dashboard from '@/views/DashboardView.vue'
-
+import FriendRequest from '@/views/FriendrequestView.vue';
 
 const routes = [
     {
@@ -16,6 +16,10 @@ const routes = [
     {
       path: '/Dashboard',
       component: Dashboard
+    },
+    {
+      path: '/FriendRequest',
+      component: FriendRequest
     }
   ]
 
@@ -25,7 +29,6 @@ const router = createRouter({
   });
 
   router.beforeEach((to, from, next) => {
-    // redirect to login page if not logged in and trying to access a restricted page
     const publicPages = ['/Authenticate'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('token');

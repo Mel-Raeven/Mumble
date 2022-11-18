@@ -4,9 +4,9 @@
     <form class="loginform">
       <h1 class="title">CONFIDE</h1>
       <p class="logintitle"> Username</p>
-      <input v-model="username" type="text" class="inputfield" />
+      <input v-model="username" type="text" class="inputfield" required="required"/>
       <p class="logintitle">Password</p>
-      <input v-model="password" type="password" class="inputfield" />
+      <input v-model="password" type="password" class="inputfield" required="required"/>
       <button v-on:click="login()" class="loginbutton"> Login </button>
     </form>
   </div>
@@ -73,12 +73,15 @@ export default {
 </script>
   
 <style scoped>
+*{
+  background: none;
+}
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   align-content: center;
-}
+  }
 
 .title {
   color: #00ff8e;

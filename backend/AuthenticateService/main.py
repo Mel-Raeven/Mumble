@@ -15,23 +15,29 @@ def func():
     "email": ___requestBody["email"],
     "username": "empty"
     }
-    
-    key = loadKey()
-    print(key)
-    
-    token = jwt.encode(
-    payload=payload_data,
-    key=key,
-    algorithm='ES256'
-    )
-    print(token)
+    algorithm = 'ES256'
+    key = loadKey('.key/private.ec.key')
+
+    token = createToken(payload_data, key, algorithm)
+    decodeToken(token, key, algorithm)
     return token
 
-def loadKey():
-    private_key = open('.key/private.ec.key', 'r').read()
+def loadKey(path):
+    private_key = open(path, 'r').read()
     key = serialization.load_pem_private_key(private_key.encode(), password=None)
     return key
 
+def createToken(payload, key, algorithm):
+    token = jwt.encode(
+        payload=payload,
+        key=key,
+        algorithm=algorithm
+    )
+    return token
+
+def decodeToken(token, key, algorithm):
+    decoded = jwt.decode(token, key, algorithm)
+    return decoded
 
 if __name__ == '__main__':
     app.debug = True
