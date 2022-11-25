@@ -1,0 +1,33 @@
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - setup-frontend
+  - build-frontend
+  - linting-frontend
+
+setup_npm:
+  stage: setup-frontend
+  script:
+    - cd frontend/
+    - echo "installing..."
+    - npm install
+
+build-job-frontend:
+  stage: build-frontend
+  script:
+    - cd frontend/
+    - echo "building..."
+    - npm run build
+
+
+
+lint-test-job:
+  stage: linting
+  script:
+    - cd frontend/
+    - echo "Linting..."
+    - npm run lint
