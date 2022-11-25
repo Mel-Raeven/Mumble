@@ -8,9 +8,8 @@ stages:
   - setup-frontend
   - build-frontend
   - linting-frontend
-  - test-backend-authservice
-  - build-backend-authservice
-  - build-backend-gateway
+  - test-backend
+  # - build-backend
 
 setup_npm:
   stage: setup-frontend
@@ -35,24 +34,25 @@ lint-test-job:
 
 unit-test-backend-authservice-job:
   image: python
-  stage: test-backend-authservice
+  stage: test-backend
   script:
     - cd backend/AuthenticateService/
     - pip3 install -r requirements.txt
     - python3 unit_test.py
 
-build-job-AuthService:
-  image: python
-  stage: build-backend-authservice
-  script:
-    - cd backend/AuthenticateService/
-    - pip3 install -r requirements.txt
-    - python3 main.py
+# build-job-backend:
+#   image: python
+#   stage: build-backend
+#   script:
+#     - cd backend/AuthenticateService/
+#     - pip3 install -r requirements.txt
+#     - python3 main.py
+  
 
-build-job-APIgateway:
-  image: python
-  stage: build-backend-gateway
-  script:
-    - cd backend/API-gateway/
-    - python3 main.py
+# build-job-APIgateway:
+#   image: python
+#   stage: build-backend
+#   script:
+#     - cd backend/API-gateway/
+#     - python3 main.py
 
