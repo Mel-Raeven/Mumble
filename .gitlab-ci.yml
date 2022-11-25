@@ -26,7 +26,7 @@ build-job-frontend:
 
 
 lint-test-job:
-  stage: linting
+  stage: linting-frontend
   script:
     - cd frontend/
     - echo "Linting..."
