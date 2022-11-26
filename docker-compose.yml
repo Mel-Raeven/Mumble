@@ -1,0 +1,17 @@
+version: "1.0"
+
+services:
+  frontend:
+    image: mumble/vue-frontend-app:latest
+    ports:
+      - 8080:8080
+    
+    gateway:
+    image: mumble/gateway:latest
+    ports:
+      - 3000:3000
+    
+    authservice:
+    image: mumble/authservice:latest
+    ports:
+      - 3001:3001

@@ -2,6 +2,7 @@ from flask import Flask, request
 import jwt
 from cryptography.hazmat.primitives import serialization
 import json
+from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__)
 
@@ -40,5 +41,10 @@ def decodeToken(token, key, algorithm):
     return decoded
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(port="3001")
+    #development server
+    #app.debug = True
+    #app.run(host="0.0.0.0", port="3001")
+    
+    #production
+    http_server = WSGIServer(('', 3001), app)
+    http_server.serve_forever()
