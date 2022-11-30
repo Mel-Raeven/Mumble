@@ -1,3 +1,5 @@
 Flask
 pyjwt[crypto]
 gevent
+mysql-connector-python
+bcrypt

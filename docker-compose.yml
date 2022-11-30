@@ -1,4 +1,4 @@
-version: "1.0"
+version: "3.7"
 
 services:
   frontend:
@@ -6,12 +6,12 @@ services:
     ports:
       - 8080:8080
     
-    gateway:
+  gatewayservice:
     image: mumble/gateway:latest
     ports:
       - 3000:3000
     
-    authservice:
+  authservice:
     image: mumble/authservice:latest
     ports:
       - 3001:3001

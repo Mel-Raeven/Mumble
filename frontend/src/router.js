@@ -3,6 +3,7 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 import Authenticate from '@/views/AuthenticateView.vue';
 import Dashboard from '@/views/DashboardView.vue'
 import FriendRequest from '@/views/FriendrequestView.vue';
+import Register from '@/views/RegisterView.vue';
 
 const routes = [
     {
@@ -12,6 +13,10 @@ const routes = [
     {
         path: '/Authenticate',
         component: Authenticate
+    },
+    {
+        path: '/Register',
+        component: Register
     },
     {
       path: '/Dashboard',
@@ -29,7 +34,7 @@ const router = createRouter({
   });
 
   router.beforeEach((to, from, next) => {
-    const publicPages = ['/Authenticate'];
+    const publicPages = ['/Authenticate', '/Register'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('token');
   

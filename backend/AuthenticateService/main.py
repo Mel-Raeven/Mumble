@@ -1,27 +1,55 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 import jwt
 from cryptography.hazmat.primitives import serialization
 import json
+import bcrypt
 from gevent.pywsgi import WSGIServer
+import mysql.connector as mariadb
 
 app = Flask(__name__)
+mariadb_connection = mariadb.Connect(user='root', password='admin', host='localhost', port='3306', database='mumble')
+create_cursor = mariadb_connection.cursor()
 
 @app.route('/auth', methods=['POST'])
-def func():
+def auth():
     ___requestBody = json.loads(request.get_data())
-    print (___requestBody)
+    print (___requestBody["password"])
+    ___sql_statement = 'SELECT * from User where email = %s'
+    ___variables = (___requestBody["email"],)
+    create_cursor.execute(___sql_statement, ___variables)
+    sqlResult = create_cursor.fetchall()
+    passwordHash = sqlResult[0][3].encode('utf-8')
+    password = ___requestBody["password"].encode('utf-8')
     
-    token = 'test'
-    payload_data = {
-    "email": ___requestBody["email"],
-    "username": "empty"
-    }
-    algorithm = 'ES256'
-    key = loadKey('.key/private.ec.key')
+    if bcrypt.checkpw(password, passwordHash):    
+        payload_data = {
+            "email": ___requestBody["email"],
+            "username": "empty"
+        }
+        algorithm = 'ES256'
+        key = loadKey('.key/private.ec.key')
+        token = createToken(payload_data, key, algorithm)
+        decodeToken(token, key, algorithm)
+        return token
+    else:
+        return Response(status=400)
 
-    token = createToken(payload_data, key, algorithm)
-    decodeToken(token, key, algorithm)
-    return token
+@app.route('/register', methods=['POST'])
+def register():
+    ___requestBody = json.loads(request.get_data())
+    salt = bcrypt.gensalt()    
+    password = ___requestBody["password"].encode('utf-8')
+    hashedPassword = bcrypt.hashpw(password, salt)
+    ___sql_statement = 'INSERT INTO User (Name, Salt, SaltedHash, email) VALUES (%s, %s, %s, %s)'
+    ___variables = (
+        ___requestBody["username"],
+        salt,
+        hashedPassword,
+        ___requestBody["email"]
+    )
+    create_cursor.execute(___sql_statement, ___variables)
+    mariadb_connection.commit()
+    return Response(status=200)
 
 def loadKey(path):
     private_key = open(path, 'r').read()
@@ -42,9 +70,9 @@ def decodeToken(token, key, algorithm):
 
 if __name__ == '__main__':
     #development server
-    #app.debug = True
-    #app.run(host="0.0.0.0", port="3001")
+    app.debug = True
+    app.run(host="0.0.0.0", port="3001")
     
     #production
-    http_server = WSGIServer(('', 3001), app)
-    http_server.serve_forever()
+    #http_server = WSGIServer(('', 3001), app)
+    #http_server.serve_forever()

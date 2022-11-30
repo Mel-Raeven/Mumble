@@ -3,11 +3,12 @@
     <particles-bg color="#19E602" num="50" type="cobweb" :canvas="{ backgroundColor: '#363030' }" :bg="true" />
     <form class="loginform">
       <h1 class="title">CONFIDE</h1>
-      <p class="logintitle"> Username</p>
-      <input v-model="username" type="text" class="inputfield" required="required"/>
+      <p class="logintitle"> Email</p>
+      <input v-model="email" type="text" class="inputfield" required="required"/>
       <p class="logintitle">Password</p>
       <input v-model="password" type="password" class="inputfield" required="required"/>
       <button v-on:click="login()" class="loginbutton"> Login </button>
+      <button v-on:click="register()" class="loginbutton"> Register </button>
     </form>
   </div>
 </template>
@@ -26,12 +27,12 @@ export default {
   },
   setup() {
     const password = ref('');
-    const username = ref('');
+    const email = ref('');
 
     async function login() {
       try {
         const response = await axios.post("http://localhost:3000/auth", {
-          email: username.value,
+          email: email.value,
           password: password.value,
         });
         const status = JSON.parse(response.status);
@@ -56,10 +57,15 @@ export default {
         }, 3000);
       }
     }
+
+    function register(){
+        router.push('/Register')
+      }
     return {
       password,
-      username,
-      login
+      email,
+      login,
+      register
     }
   }
 }
