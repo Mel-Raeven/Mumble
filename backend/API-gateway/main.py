@@ -20,6 +20,20 @@ def register():
     x = requests.post('http://127.0.0.1:3001/register', ___requestBody)
     return x.content
 
+@app.route('/message/post', methods=['POST'])
+def postMessage():
+    ___requestBody = request.get_data(as_text=True)
+    print(___requestBody)
+    x = requests.post('http://127.0.0.1:3002/message/post', ___requestBody)
+    return x.content
+
+@app.route('/message/get', methods=['POST'])
+def getMessage():
+    ___requestBody = request.get_data(as_text=True)
+    print(___requestBody)
+    x = requests.post('http://127.0.0.1:3002/message/get', ___requestBody)
+    return x.content
+
 if __name__ == '__main__':
     #development
     app.debug = True

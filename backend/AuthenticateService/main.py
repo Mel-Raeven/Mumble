@@ -19,12 +19,14 @@ def auth():
     create_cursor.execute(___sql_statement, ___variables)
     sqlResult = create_cursor.fetchall()
     passwordHash = sqlResult[0][3].encode('utf-8')
+    username = sqlResult[0][1]
     password = ___requestBody["password"].encode('utf-8')
+    
     
     if bcrypt.checkpw(password, passwordHash):    
         payload_data = {
             "email": ___requestBody["email"],
-            "username": "empty"
+            "username": username
         }
         algorithm = 'ES256'
         key = loadKey('.key/private.ec.key')
