@@ -8,7 +8,7 @@ import Register from '@/views/RegisterView.vue';
 const routes = [
     {
         path: '/',
-        redirect:'/Authenticate'
+        redirect:'/Dashboard'
     },
     {
         path: '/Authenticate',
@@ -36,7 +36,14 @@ const router = createRouter({
   router.beforeEach((to, from, next) => {
     const publicPages = ['/Authenticate', '/Register'];
     const authRequired = !publicPages.includes(to.path);
-    const loggedIn = localStorage.getItem('token');
+    let loggedIn;
+    try{
+      loggedIn = localStorage.getItem('token');
+    }
+    catch{
+      console.log('nope')
+    }
+    
   
     if (authRequired && !loggedIn) {
       return next('/Authenticate');

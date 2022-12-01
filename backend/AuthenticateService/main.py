@@ -7,7 +7,7 @@ from gevent.pywsgi import WSGIServer
 import mysql.connector as mariadb
 
 app = Flask(__name__)
-mariadb_connection = mariadb.Connect(user='root', password='admin', host='localhost', port='3306', database='mumble')
+mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
 create_cursor = mariadb_connection.cursor()
 
 @app.route('/auth', methods=['POST'])
@@ -18,7 +18,8 @@ def auth():
     ___variables = (___requestBody["email"],)
     create_cursor.execute(___sql_statement, ___variables)
     sqlResult = create_cursor.fetchall()
-    passwordHash = sqlResult[0][3].encode('utf-8')
+    print(sqlResult[0][3])
+    passwordHash = sqlResult[0][4].encode('utf-8')
     username = sqlResult[0][1]
     password = ___requestBody["password"].encode('utf-8')
     

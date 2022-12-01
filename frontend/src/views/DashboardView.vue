@@ -10,13 +10,15 @@
         <div class="friendscontainer">
           <h1 v-on:click="openChat('piet')">piet</h1>
           <h1 v-on:click="openChat('sjef')">sjef</h1>
+          <h1 v-on:click="openChat('admin')">admin</h1>
         </div>
       </div>
       <div class="messageContainer">
         <button v-on:click="getMessages()"> Refresh </button>
         <div class="messages">
           <div v-for="message in messageList[0]" :key="message">
-            <h2 class="messagesContent">{{message[0][0]}}</h2>
+            <h2 class="messagesContent" v-if="(message[0][2] == decodedtoken.username)">{{message[0][1]}}</h2>
+            <h2 class="messagesContentFriend" v-if="(message[0][2] != decodedtoken.username)">{{message[0][1]}}</h2>
           </div>
         </div>
         <form class="inputForm">
@@ -30,30 +32,25 @@
   
 <script>
 import axios from 'axios';
-//import { ref } from 'vue';
-
+import router from "@/router";
 const jose = require('jose')
-const decodedtoken = jose.decodeJwt(localStorage.getItem('token'))
 
 export default {
   data(){
     return{
       messageList:[],
       currentChat: "",
-      message: ""
+      message: "",
+      decodedtoken: ""
     }
   },
-  setup(){
-    return{
-      decodedtoken
-    }
+  mounted(){
+    this.decodedtoken = jose.decodeJwt(localStorage.getItem('token'))
   },
   methods: {
-    
-
     logout() {
       localStorage.removeItem('token');
-      window.location.reload();
+      router.push('/Authenticate')
     },
 
      async postMessage(){
@@ -61,7 +58,7 @@ export default {
         const response = await axios.post("http://localhost:3000/message/post", {
           content: this.message,
           destination: this.currentChat,
-          from: decodedtoken.username
+          from: this.decodedtoken.username
         });
         const status = JSON.parse(response.status);
         if (status == "200") {
@@ -79,13 +76,13 @@ export default {
       try {
         const response = await axios.post("http://localhost:3000/message/get", {
           friend: this.currentChat,
-          user: decodedtoken.username
+          user: this.decodedtoken.username
         });
         const status = JSON.parse(response.status);
         if (status == "200") {
           this.messageList.length = 0
           this.messageList.push(response.data)
-          console.log(response.data);
+          console.log(this.messageList[0]);
         }
       } catch (error) {
         this.showError = true;
@@ -212,9 +209,20 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
 }
+
 .messagesContent{
   color: white;
   background-color: #1e1f1e;
+  padding: 20px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 5px;
+  margin: 10px
+}
+
+.messagesContentFriend{
+  color: black;
+  background-color: #00ff8e;
   padding: 20px;
   padding-top: 8px;
   padding-bottom: 8px;
