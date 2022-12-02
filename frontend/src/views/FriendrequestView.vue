@@ -3,25 +3,65 @@
     <form>
       <h1>Whats your friends name?</h1>
       <input v-model="username" type="text" class="inputfield" />
-      <button>Send request</button>
+      <button v-on:click="sendInvite()">Send request</button>
+      <button v-on:click="returnDashboard()"> Return </button>
     </form>
+    <div class="invitecontainer">
+    <button v-on:click="getList()"> Refresh </button>
+      <div v-for="invite in friendInvites[0]" :key="invite">
+        <h1>{{invite[1]}}</h1>  
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+const jose = require('jose')
+import router from "@/router";
+
 export default {
+  data(){
+    return{
+      username: "",
+      decodedtoken: "",
+      friendInvites: [],
+    }
+  },
+  mounted(){
+    this.decodedtoken = jose.decodeJwt(localStorage.getItem('token'))
+  },
   methods: {
+    returnDashboard(){
+      router.push('/Dashboard');
+    },
     async sendInvite(){
       try {
-        const response = await axios.post("http://localhost:3000/message/post", {
-          content: this.message,
-          destination: this.currentChat,
-          from: this.decodedtoken.username
+        const response = await axios.post("http://localhost:3000/friend/request", {
+          user: this.decodedtoken.username, 
+          friend: this.username,
         });
         const status = JSON.parse(response.status);
         if (status == "200") {
-         this.getMessages()
+          return;
+        }
+      } catch (error) {
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 3000);
+      }
+    },
+    async getList(){
+      try {
+        const response = await axios.post("http://localhost:3000/friend/list", {
+          user: this.decodedtoken.username,
+        });
+        const status = JSON.parse(response.status);
+        if (status == "200") {
+          console.log(response.data)
+          this.friendInvites.push(response.data);
+          console.log(this.friendInvites[0])
         }
       } catch (error) {
         this.showError = true;
@@ -48,6 +88,7 @@ body {
   align-items: center;
   align-content: center;
   background-color: #363030;
+  flex-direction: column;
 }
 
 h1 {
@@ -99,4 +140,11 @@ button:hover {
   margin-bottom: 2rem;
 
 }
+
+.invitecontainer{
+  margin-top: 20px;
+  background-color: rgb(26, 25, 25);
+  width: 500px;
+}
+
 </style>

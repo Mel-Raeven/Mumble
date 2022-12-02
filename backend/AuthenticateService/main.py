@@ -14,7 +14,7 @@ create_cursor = mariadb_connection.cursor()
 def auth():
     ___requestBody = json.loads(request.get_data())
     print (___requestBody["password"])
-    ___sql_statement = 'SELECT * from User where email = %s'
+    ___sql_statement = 'SELECT * from user where email = %s'
     ___variables = (___requestBody["email"],)
     create_cursor.execute(___sql_statement, ___variables)
     sqlResult = create_cursor.fetchall()
@@ -43,7 +43,7 @@ def register():
     salt = bcrypt.gensalt()    
     password = ___requestBody["password"].encode('utf-8')
     hashedPassword = bcrypt.hashpw(password, salt)
-    ___sql_statement = 'INSERT INTO User (Name, Salt, SaltedHash, email) VALUES (%s, %s, %s, %s)'
+    ___sql_statement = 'INSERT INTO user (Name, Salt, SaltedHash, email) VALUES (%s, %s, %s, %s)'
     ___variables = (
         ___requestBody["username"],
         salt,

@@ -2,82 +2,113 @@ from flask import Flask, request, Response
 import json
 from gevent.pywsgi import WSGIServer
 import mysql.connector as mariadb
+from peewee import *
 
 app = Flask(__name__)
-mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
-create_cursor = mariadb_connection.cursor()
+mysql_db = MySQLDatabase(database='mumble', user='root', password='admin', host='192.168.178.222', port=3306)
+# mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
+# create_cursor = mariadb_connection.cursor()
+
+class user(Model):
+    Name = CharField()
+    email = CharField()
+    Salt = CharField()
+    SaltedHash = CharField()
+    class Meta:
+        database = mysql_db
+
+class friends(Model):
+    User1ID = IntegerField()
+    User2ID = IntegerField()
+    Accepted = BooleanField()
+    class Meta:
+        database = mysql_db
+
 
 @app.route('/friend/request', methods=['POST'])
-def request():
+def requestFriend():
     ___requestBody = json.loads(request.get_data())
-    ___sql_statement = 'INSERT INTO Friends (User1ID, User2ID) VALUES (%s, %s);'
-    ___variables = (
-        ___requestBody["user"],
-        ___requestBody["friend"],
-    )
-    create_cursor.execute(___sql_statement, ___variables)
-    mariadb_connection.commit()
-
+    mysql_db.connect()
+    requester = user.get(user.Name == ___requestBody["user"])
+    print(___requestBody["friend"])
+    friend = user.get(user.Name == ___requestBody["friend"])
+    print(friend.id)
+    friendRequest = friends.create(User1ID= requester.id, User2ID= friend.id, Accepted=0)
+    friendRequest.save()
+    mysql_db.close()
     return Response(status=200)
 
-
-@app.route('/friend/accept', methods=['POST'])
-def accept():
+@app.route('/friend/list', methods=['POST'])
+def listFriendRequests():
     ___requestBody = json.loads(request.get_data())
-    ___sql_statement = 'UPDATE Friends SET Accepted=1 WHERE id=%s;'
-    ___variables = (
-        ___requestBody["requestID"],
-    )
-    create_cursor.execute(___sql_statement, ___variables)
-    mariadb_connection.commit()
+    mysql_db.connect()
+    requester = user.get(user.Name == ___requestBody["user"])
+    friendRequests = list(friends.select().where(friends.User2ID == requester.id))
+    
+    arr = []
+    for requests in friendRequests:
+        print(requests.User1ID)
+        fromUser = user.get(user.id == requests.User1ID)
+        arr.append([requests.id, fromUser.Name])
+    mysql_db.close()
+    return arr
+# @app.route('/friend/accept', methods=['POST'])
+# def accept():
+#     ___requestBody = json.loads(request.get_data())
+#     ___sql_statement = 'UPDATE Friends SET Accepted=1 WHERE id=%s;'
+#     ___variables = (
+#         ___requestBody["requestID"],
+#     )
+#     create_cursor.execute(___sql_statement, ___variables)
+#     mariadb_connection.commit()
 
     
 
-@app.route('/friend/get', methods=['POST'])
-def get():
-    ___requestBody = json.loads(request.get_data())
+# @app.route('/friend/get', methods=['POST'])
+# def get():
+#     ___requestBody = json.loads(request.get_data())
 
-    ___sql_statement = 'SELECT id from User where Name=%s;'
-    ___variables = (
-        ___requestBody["friend"],
-    )
-    create_cursor.execute(___sql_statement, ___variables)
-    friendID = create_cursor.fetchone()
-    friendID = friendID[0]
+#     ___sql_statement = 'SELECT id from User where Name=%s;'
+#     ___variables = (
+#         ___requestBody["friend"],
+#     )
+#     create_cursor.execute(___sql_statement, ___variables)
+#     friendID = create_cursor.fetchone()
+#     friendID = friendID[0]
 
-    ___sql_statement = 'SELECT id from User where Name=%s;'
-    ___variables = (
-        ___requestBody["user"],
-    )
-    create_cursor.execute(___sql_statement, ___variables)
-    userID = create_cursor.fetchone()
-    userID = userID[0]
+#     ___sql_statement = 'SELECT id from User where Name=%s;'
+#     ___variables = (
+#         ___requestBody["user"],
+#     )
+#     create_cursor.execute(___sql_statement, ___variables)
+#     userID = create_cursor.fetchone()
+#     userID = userID[0]
 
-    ___sql_statement = 'SELECT MessageID from MessageUser where UserID=%s AND User2ID=%s OR UserID=%s AND User2ID=%s;'
-    ___variables = (
-        userID,
-        friendID,
-        friendID,
-        userID,
-    )
-    create_cursor.execute(___sql_statement, ___variables)
-    messageIdList = create_cursor.fetchall()
+#     ___sql_statement = 'SELECT MessageID from MessageUser where UserID=%s AND User2ID=%s OR UserID=%s AND User2ID=%s;'
+#     ___variables = (
+#         userID,
+#         friendID,
+#         friendID,
+#         userID,
+#     )
+#     create_cursor.execute(___sql_statement, ___variables)
+#     messageIdList = create_cursor.fetchall()
     
-    list = []
-    for item in messageIdList:
-        list.append(item[0])
-    print(list)
-    messageList = []
-    for id in tuple(list):
-        ___sql_statement = 'SELECT * from Message where id=%s;'
-        ___variables=(
-            id,
-        )
-        create_cursor.execute(___sql_statement, ___variables)
-        ___message = create_cursor.fetchall()
-        messageList.append(___message)
-    print(messageList)
-    return messageList
+#     list = []
+#     for item in messageIdList:
+#         list.append(item[0])
+#     print(list)
+#     messageList = []
+#     for id in tuple(list):
+#         ___sql_statement = 'SELECT * from Message where id=%s;'
+#         ___variables=(
+#             id,
+#         )
+#         create_cursor.execute(___sql_statement, ___variables)
+#         ___message = create_cursor.fetchall()
+#         messageList.append(___message)
+#     print(messageList)
+#     return messageList
 
 if __name__ == '__main__':
     #development server

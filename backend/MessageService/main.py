@@ -10,7 +10,7 @@ create_cursor = mariadb_connection.cursor()
 @app.route('/message/post', methods=['POST'])
 def post():
     ___requestBody = json.loads(request.get_data())
-    ___sql_statement = 'INSERT INTO Message (Content, Sender) VALUES (%s, %s);'
+    ___sql_statement = 'INSERT INTO message (Content, Sender) VALUES (%s, %s);'
     ___variables = (
         ___requestBody["content"],
         ___requestBody["from"],
@@ -23,7 +23,7 @@ def post():
     insertedID = create_cursor.fetchone()
     insertedID = insertedID[0]
 
-    ___sql_statement = 'SELECT id from User where Name=%s;'
+    ___sql_statement = 'SELECT id from user where Name=%s;'
     print(___requestBody["from"])
     ___variables = (
         ___requestBody["from"],
@@ -32,7 +32,7 @@ def post():
     userID = create_cursor.fetchone()
     userID = userID[0]
 
-    ___sql_statement = 'SELECT id from User where Name=%s;'
+    ___sql_statement = 'SELECT id from user where Name=%s;'
     ___variables = (
         ___requestBody["destination"],
     )
@@ -40,7 +40,7 @@ def post():
     friendID = create_cursor.fetchone()
     friendID = friendID[0]
 
-    ___sql_statement = 'INSERT INTO MessageUser (MessageID, UserID, User2ID) VALUES (%s, %s, %s)'
+    ___sql_statement = 'INSERT INTO messageuser (MessageID, UserID, User2ID) VALUES (%s, %s, %s)'
     ___variables = (
         insertedID,
         userID,
@@ -54,7 +54,7 @@ def post():
 def get():
     ___requestBody = json.loads(request.get_data())
 
-    ___sql_statement = 'SELECT id from User where Name=%s;'
+    ___sql_statement = 'SELECT id from user where Name=%s;'
     ___variables = (
         ___requestBody["friend"],
     )
@@ -62,7 +62,7 @@ def get():
     friendID = create_cursor.fetchone()
     friendID = friendID[0]
 
-    ___sql_statement = 'SELECT id from User where Name=%s;'
+    ___sql_statement = 'SELECT id from user where Name=%s;'
     ___variables = (
         ___requestBody["user"],
     )
@@ -70,7 +70,7 @@ def get():
     userID = create_cursor.fetchone()
     userID = userID[0]
 
-    ___sql_statement = 'SELECT MessageID from MessageUser where UserID=%s AND User2ID=%s OR UserID=%s AND User2ID=%s;'
+    ___sql_statement = 'SELECT MessageID from messageuser where UserID=%s AND User2ID=%s OR UserID=%s AND User2ID=%s;'
     ___variables = (
         userID,
         friendID,
@@ -86,7 +86,7 @@ def get():
     print(list)
     messageList = []
     for id in tuple(list):
-        ___sql_statement = 'SELECT * from Message where id=%s;'
+        ___sql_statement = 'SELECT * from message where id=%s;'
         ___variables=(
             id,
         )

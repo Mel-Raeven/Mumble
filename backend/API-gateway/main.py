@@ -34,6 +34,20 @@ def getMessage():
     x = requests.post('http://127.0.0.1:3002/message/get', ___requestBody)
     return x.content
 
+@app.route('/friend/request', methods=['POST'])
+def requestFriend():
+    ___requestBody = request.get_data(as_text=True)
+    print(___requestBody)
+    x = requests.post('http://127.0.0.1:3003/friend/request', ___requestBody)
+    return x.content
+
+@app.route('/friend/list', methods=['POST'])
+def requestFriendList():
+    ___requestBody = request.get_data(as_text=True)
+    print(___requestBody)
+    x = requests.post('http://127.0.0.1:3003/friend/list', ___requestBody)
+    return x.content
+
 if __name__ == '__main__':
     #development
     app.debug = True

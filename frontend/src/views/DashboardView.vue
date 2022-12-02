@@ -16,9 +16,13 @@
       <div class="messageContainer">
         <button v-on:click="getMessages()"> Refresh </button>
         <div class="messages">
-          <div v-for="message in messageList[0]" :key="message">
-            <h2 class="messagesContent" v-if="(message[0][2] == decodedtoken.username)">{{message[0][1]}}</h2>
-            <h2 class="messagesContentFriend" v-if="(message[0][2] != decodedtoken.username)">{{message[0][1]}}</h2>
+          <div v-for="message in messageList[0]" :key="message" style="width:100%;">
+            <div class="messageUserContainer">
+              <h2 class="messagesContent" v-if="(message[0][2] == decodedtoken.username)">{{message[0][1]}}</h2>
+            </div>
+            <div class="messageFriendContainer">
+              <h2 class="messagesContentFriend" v-if="(message[0][2] != decodedtoken.username)">{{message[0][1]}}</h2>
+            </div>
           </div>
         </div>
         <form class="inputForm">
@@ -207,6 +211,18 @@ body {
   height: 90%;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.messageUserContainer{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.messageFriendContainer{
+  width: 100%;
+  display: flex;
   justify-content: flex-start;
 }
 
