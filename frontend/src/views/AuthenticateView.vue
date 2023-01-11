@@ -2,7 +2,7 @@
   <div class="container">
     <particles-bg color="#19E602" num="50" type="cobweb" :canvas="{ backgroundColor: '#363030' }" :bg="true" />
     <form class="loginform">
-      <h1 class="title">CONFIDE</h1>
+      <h1 class="title">MUMBLE</h1>
       <p class="logintitle"> Email</p>
       <input v-model="email" type="text" class="inputfield" required="required"/>
       <p class="logintitle">Password</p>
@@ -31,7 +31,7 @@ export default {
 
     async function login() {
       try {
-        const response = await axios.post("http://localhost:3000/auth", {
+        const response = await axios.post("http://20.6.0.6:3000/auth", {
           email: email.value,
           password: password.value,
         });

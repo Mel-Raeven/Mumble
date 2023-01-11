@@ -98,9 +98,9 @@ def get():
 
 if __name__ == '__main__':
     #development server
-    app.debug = True
-    app.run(host="0.0.0.0", port="3002")
+    #app.debug = True
+    #app.run(host="0.0.0.0", port="3002")
     
     #production
-    #http_server = WSGIServer(('', 3002), app)
-    #http_server.serve_forever()
+    http_server = WSGIServer(('', 3002), app)
+    http_server.serve_forever()

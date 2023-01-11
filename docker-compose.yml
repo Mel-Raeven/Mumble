@@ -3,15 +3,80 @@ version: "3.7"
 services:
   frontend:
     image: mumble/vue-frontend-app:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - 8080:8080
-    
+    networks:
+      mumble_net:
+        ipv4_address: 20.6.0.5
+
   gatewayservice:
     image: mumble/gateway:latest
+    build:
+      context: ./backend/API-gateway
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
-    
+    networks:
+      mumble_net:
+        ipv4_address: 20.6.0.6
+
   authservice:
     image: mumble/authservice:latest
+    build:
+      context: ./backend/AuthenticateService
+      dockerfile: Dockerfile
     ports:
       - 3001:3001
+    networks:
+      mumble_net:
+        ipv4_address: 20.6.0.7
+    # depends_on:
+    #   - mariadb
+              
+  messageservice:
+    image: mumble/messageservice:latest
+    build:
+      context: ./backend/MessageService
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3002
+    networks:
+      mumble_net:
+        ipv4_address: 20.6.0.8
+
+  friendservice:
+    image: mumble/friendservice:latest
+    build:
+      context: ./backend/FriendService
+      dockerfile: Dockerfile
+    ports:
+      - 3003:3003
+    networks:
+      mumble_net:
+        ipv4_address: 20.6.0.9
+
+  # mariadb:
+  #   image: mariadb
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: admin
+  #   ports:
+  #     - 3306:3306
+  #   volumes:
+  #     - mumble:/var/lib/mysql
+  #   networks:
+  #     mumble_net:
+  #       ipv4_address: 20.6.0.10
+
+volumes:
+  mumble:
+
+networks:
+  mumble_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "20.6.0.0/16"

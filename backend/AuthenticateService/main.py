@@ -13,12 +13,10 @@ create_cursor = mariadb_connection.cursor()
 @app.route('/auth', methods=['POST'])
 def auth():
     ___requestBody = json.loads(request.get_data())
-    print (___requestBody["password"])
     ___sql_statement = 'SELECT * from user where email = %s'
     ___variables = (___requestBody["email"],)
     create_cursor.execute(___sql_statement, ___variables)
     sqlResult = create_cursor.fetchall()
-    print(sqlResult[0][3])
     passwordHash = sqlResult[0][4].encode('utf-8')
     username = sqlResult[0][1]
     password = ___requestBody["password"].encode('utf-8')
@@ -73,9 +71,10 @@ def decodeToken(token, key, algorithm):
 
 if __name__ == '__main__':
     #development server
-    app.debug = True
-    app.run(host="0.0.0.0", port="3001")
+    #app.debug = True
+    #app.run(host="0.0.0.0", port="3001")
     
     #production
-    #http_server = WSGIServer(('', 3001), app)
-    #http_server.serve_forever()
+    http_server = WSGIServer(('', 3001), app)
+    print("starting auth service")
+    http_server.serve_forever()

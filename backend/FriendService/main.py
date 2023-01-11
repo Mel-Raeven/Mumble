@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 import json
 from gevent.pywsgi import WSGIServer
-import mysql.connector as mariadb
+#import mysql.connector as mariadb
 from peewee import *
 
 app = Flask(__name__)
@@ -112,9 +112,9 @@ def listFriendRequests():
 
 if __name__ == '__main__':
     #development server
-    app.debug = True
-    app.run(host="0.0.0.0", port="3003")
+    #app.debug = True
+    #app.run(host="0.0.0.0", port="3003")
     
     #production
-    #http_server = WSGIServer(('', 3003), app)
-    #http_server.serve_forever()
+    http_server = WSGIServer(('', 3003), app)
+    http_server.serve_forever()
