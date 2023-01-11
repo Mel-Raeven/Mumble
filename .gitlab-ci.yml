@@ -1,29 +1,11 @@
 image: node:latest
 
-cache:
-  paths:
-    - frontend/node_modules/
-
 stages:
-  - setup-frontend
-  - build-frontend
   - linting-frontend
   - test-backend
+  - build
+  - push
   # - build-backend
-
-setup_npm:
-  stage: setup-frontend
-  script:
-    - cd frontend/
-    - echo "installing..."
-    - npm install
-
-build-job-frontend:
-  stage: build-frontend
-  script:
-    - cd frontend/
-    - echo "building..."
-    - npm run build
 
 lint-test-job:
   stage: linting-frontend
@@ -39,6 +21,17 @@ unit-test-backend-authservice-job:
     - cd backend/AuthenticateService/
     - pip3 install -r requirements.txt
     - python3 unit_test.py
+
+build-job:
+  stage: build
+  script:
+    - docker-compose up --build
+
+push-job:
+  stage: push
+  script:
+    - docker image tag mumble/vue-frontend-app:latest scarydemondocker/mumble:latest
+    - docker image push scarydemondocker/mumble:latest
 
 # build-job-backend:
 #   image: python
