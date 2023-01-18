@@ -35,8 +35,7 @@ push-job:
   script:
     - cd frontend/
     - docker login -u $CI_NAME -p $CI_JOB_TOKEN
-    - docker build -t mumble/vue-frontend-app:latest .
-    - docker image tag mumble/vue-frontend-app:latest scarydemondocker/mumble:latest
+    - docker build -t scarydemondocker/mumble:latest .
     - docker push scarydemondocker/mumble:latest
 
 # build-job-backend:
