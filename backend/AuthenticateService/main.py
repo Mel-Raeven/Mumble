@@ -71,10 +71,10 @@ def decodeToken(token, key, algorithm):
 
 if __name__ == '__main__':
     #development server
-    #app.debug = True
-    #app.run(host="0.0.0.0", port="3001")
+    app.debug = True
+    app.run(host="0.0.0.0", port="3001")
     
     #production
-    http_server = WSGIServer(('', 3001), app)
-    print("starting auth service")
-    http_server.serve_forever()
+    #http_server = WSGIServer(('', 3001), app)
+    #print("starting auth service")
+    #http_server.serve_forever()

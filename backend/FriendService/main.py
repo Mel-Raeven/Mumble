@@ -52,6 +52,7 @@ def listFriendRequests():
         arr.append([requests.id, fromUser.Name])
     mysql_db.close()
     return arr
+
 # @app.route('/friend/accept', methods=['POST'])
 # def accept():
 #     ___requestBody = json.loads(request.get_data())
@@ -62,59 +63,11 @@ def listFriendRequests():
 #     create_cursor.execute(___sql_statement, ___variables)
 #     mariadb_connection.commit()
 
-    
-
-# @app.route('/friend/get', methods=['POST'])
-# def get():
-#     ___requestBody = json.loads(request.get_data())
-
-#     ___sql_statement = 'SELECT id from User where Name=%s;'
-#     ___variables = (
-#         ___requestBody["friend"],
-#     )
-#     create_cursor.execute(___sql_statement, ___variables)
-#     friendID = create_cursor.fetchone()
-#     friendID = friendID[0]
-
-#     ___sql_statement = 'SELECT id from User where Name=%s;'
-#     ___variables = (
-#         ___requestBody["user"],
-#     )
-#     create_cursor.execute(___sql_statement, ___variables)
-#     userID = create_cursor.fetchone()
-#     userID = userID[0]
-
-#     ___sql_statement = 'SELECT MessageID from MessageUser where UserID=%s AND User2ID=%s OR UserID=%s AND User2ID=%s;'
-#     ___variables = (
-#         userID,
-#         friendID,
-#         friendID,
-#         userID,
-#     )
-#     create_cursor.execute(___sql_statement, ___variables)
-#     messageIdList = create_cursor.fetchall()
-    
-#     list = []
-#     for item in messageIdList:
-#         list.append(item[0])
-#     print(list)
-#     messageList = []
-#     for id in tuple(list):
-#         ___sql_statement = 'SELECT * from Message where id=%s;'
-#         ___variables=(
-#             id,
-#         )
-#         create_cursor.execute(___sql_statement, ___variables)
-#         ___message = create_cursor.fetchall()
-#         messageList.append(___message)
-#     print(messageList)
-#     return messageList
-
 if __name__ == '__main__':
     #development server
-    #app.debug = True
-    #app.run(host="0.0.0.0", port="3003")
+    app.debug = True
+    app.run(host="0.0.0.0", port="3003")
     
     #production
-    http_server = WSGIServer(('', 3003), app)
-    http_server.serve_forever()
+    #http_server = WSGIServer(('', 3003), app)
+    #http_server.serve_forever()

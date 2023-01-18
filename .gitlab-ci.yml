@@ -30,8 +30,11 @@ build-job:
 push-job:
   stage: push
   script:
+    - cd frontend/
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t mumble/vue-frontend-app:latest .
     - docker image tag mumble/vue-frontend-app:latest scarydemondocker/mumble:latest
-    - docker image push scarydemondocker/mumble:latest
+    - docker push scarydemondocker/mumble:latest
 
 # build-job-backend:
 #   image: python
