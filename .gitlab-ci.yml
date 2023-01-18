@@ -28,7 +28,7 @@ build-job:
   allow_failure: true
   script:
     - docker login -u $CI_NAME -p $CI_JOB_TOKEN
-    - docker-compose up --build
+    - docker-compose build
 
 push-job:
   stage: push
