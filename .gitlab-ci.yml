@@ -11,7 +11,7 @@ lint-test-job:
   stage: linting-frontend
   script:
     - cd frontend/
-    - echo "Linting..."
+    - npm i
     - npm run lint
 
 unit-test-backend-authservice-job:
