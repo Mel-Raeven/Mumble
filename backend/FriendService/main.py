@@ -5,7 +5,10 @@ from gevent.pywsgi import WSGIServer
 from peewee import *
 
 app = Flask(__name__)
-mysql_db = MySQLDatabase(database='mumble', user='root', password='admin', host='192.168.178.222', port=3306)
+try:
+    mysql_db = MySQLDatabase(database='mumble', user='root', password='admin', host='192.168.178.222', port=3306)
+except:
+    print("a connection error has occured")
 # mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
 # create_cursor = mariadb_connection.cursor()
 

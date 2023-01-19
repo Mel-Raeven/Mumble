@@ -4,9 +4,12 @@ from gevent.pywsgi import WSGIServer
 import mysql.connector as mariadb
 
 app = Flask(__name__)
-mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
-create_cursor = mariadb_connection.cursor()
-
+try:
+    mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
+    create_cursor = mariadb_connection.cursor()
+except:
+    print("a connection error has occured")
+    
 @app.route('/message/post', methods=['POST'])
 def post():
     ___requestBody = json.loads(request.get_data())

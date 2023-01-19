@@ -7,8 +7,12 @@ from gevent.pywsgi import WSGIServer
 import mysql.connector as mariadb
 
 app = Flask(__name__)
-mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
-create_cursor = mariadb_connection.cursor()
+try:
+    mariadb_connection = mariadb.Connect(user='root', password='admin', host='192.168.178.222', port='3306', database='mumble')
+    create_cursor = mariadb_connection.cursor()
+except:
+     print("connection error has occured")
+
 
 @app.route('/auth', methods=['POST'])
 def auth():
@@ -72,7 +76,7 @@ def decodeToken(token, key, algorithm):
 if __name__ == '__main__':
     #development server
     app.debug = True
-    app.run(host="0.0.0.0", port="3001")
+    app.run(host="localhost", port="3001")
     
     #production
     #http_server = WSGIServer(('', 3001), app)
