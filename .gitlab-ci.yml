@@ -25,7 +25,6 @@ unit-test-backend-authservice-job:
 build-job:
   stage: build
   image: docker/compose
-  allow_failure: true
   script:
     - docker login -u $CI_NAME -p $CI_JOB_TOKEN
     - docker-compose build
