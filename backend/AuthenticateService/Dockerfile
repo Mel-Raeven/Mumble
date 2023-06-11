@@ -11,4 +11,8 @@ RUN pip3 install -r requirements.txt
 
 EXPOSE 3001
 
+RUN groupadd -r mumble && useradd -r -g mumble mumble
+RUN chsh -s /usr/sbin/nologin root
+RUN su - mumble
+
 CMD python3 main.py
