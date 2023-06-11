@@ -7,6 +7,9 @@ stages:
   - push
   # - build-backend
 
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
 lint-test-job:
   stage: linting-frontend
   script:
@@ -28,6 +31,11 @@ build-job:
   script:
     - docker login -u $CI_NAME -p $CI_JOB_TOKEN
     - docker-compose build
+
+container-scanning:
+  variables:
+    CS_IMAGE: mumble:API-gateway
+  
 
 push-job:
   stage: push
