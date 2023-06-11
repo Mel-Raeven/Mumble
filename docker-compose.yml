@@ -33,8 +33,8 @@ services:
     networks:
       mumble_net:
         ipv4_address: 20.6.0.7
-    # depends_on:
-    #   - mariadb
+    depends_on:
+    - mariadb
               
   messageservice:
     image: mumble/messageservice:latest
@@ -58,17 +58,30 @@ services:
       mumble_net:
         ipv4_address: 20.6.0.9
 
-  # mariadb:
-  #   image: mariadb
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: admin
-  #   ports:
-  #     - 3306:3306
-  #   volumes:
-  #     - mumble:/var/lib/mysql
-  #   networks:
-  #     mumble_net:
-  #       ipv4_address: 20.6.0.10
+mariadb:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password_root
+    MYSQL_DATABASE: mumble
+    MYSQL_USER: mumble
+    MYSQL_PASSWORD_FILE: /run/secrets/db_password
+  ports:
+    - 3306:3306
+  volumes:
+    - mumble:/var/lib/mysql
+  networks:
+    mumble_net:
+      ipv4_address: 20.6.0.10
+  secrets:
+    - db_password_root
+    - db_password
+
+
+secrets:
+   db_password:
+     file: db_password.txt
+   db_root_password:
+     file: db_password_root.txt
 
 volumes:
   mumble:
